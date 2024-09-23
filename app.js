@@ -5,11 +5,13 @@ const port = 3000;
 app.use(express.json());
 
 // Import user router
-import userRouters from './userRouters.js';
+import usersRouters from './routers/userRouters.js';
+import destinationsRouters from './routers/destinationRouters.js';
 
 // Use user router
-app.use('/api/users/', userRouters);
+app.use('/api/users', usersRouters);
+app.use('/api/destinations', destinationsRouters);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Express server is running on ${port}`);
 });
