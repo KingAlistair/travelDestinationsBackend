@@ -1,7 +1,7 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 // DB uri
-const uri = "mongodb://127.0.0.1:27017/";
+const uri = "mongodb://127.0.0.1:27017/travelDestinations";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri,  {
@@ -30,17 +30,3 @@ async function run() {
 
 run().catch(console.dir);
 
-// const myDB = client.db("eLearning");
-// const myColl = myDB.collection("users");
-
-// const doc =     {
-//     "id": 4,
-//     "name": "Diana Prince",
-//     "email": "diana.prince@example.com",
-//     "hashedPassword": "hash4",
-//     "activity": 0
-// };
-// const result = await myColl.insertOne(doc);
-// console.log(
-//    `A document was inserted with the _id: ${result.insertedId}`,
-// );

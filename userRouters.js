@@ -17,6 +17,9 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET user by ID
+
+
 // POST user
 router.post('/', async (req, res) => {
   try {
@@ -30,6 +33,17 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Switch user logged in status
+
+
+// Get Destinations
+
+
+// Get Destinations by User
+
+// Edit Destinations
+
+// Delete Destinations
 
 
 export default router;
