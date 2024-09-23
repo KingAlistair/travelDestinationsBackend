@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 
 // MongoDB connection URI and database name
 const uri = 'mongodb://localhost:27017';
-const dbName = 'eLearning';
+const dbName = 'travelDestinations';
 
 // MongoDB client instance
 let client;

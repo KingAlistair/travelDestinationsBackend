@@ -2,7 +2,6 @@
 import express from 'express';
 const router = express.Router();
 
-
 import { getUsers, createUser } from './userQueries.js';
 
 
@@ -19,6 +18,7 @@ router.get('/', async (req, res) => {
 
 // GET user by ID
 
+// USER AUTHENTICATION 
 
 // POST user
 router.post('/', async (req, res) => {
@@ -40,6 +40,8 @@ router.post('/', async (req, res) => {
 
 
 // Get Destinations by User
+
+// Create dest
 
 // Edit Destinations
 

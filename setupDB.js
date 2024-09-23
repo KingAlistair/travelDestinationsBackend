@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import users from "./usersDb.js"; // Import users from usersDb.js
+import users from "./usersData.js"; // Import users from usersDb.js
 
 // DB uri
 const uri = "mongodb://127.0.0.1:27017/";
@@ -25,6 +25,10 @@ async function run() {
     // Get the "travelDestinations" database and "users" collection
     const myDB = client.db("travelDestinations");
     const myColl = myDB.collection("users");
+
+    // Delete all existing documents in the "users" collection
+    const deleteResult = await myColl.deleteMany({});
+    console.log(`Deleted ${deleteResult.deletedCount} existing documents from the 'users' collection.`);
 
     // Insert multiple users into the "users" collection
     const result = await myColl.insertMany(users);

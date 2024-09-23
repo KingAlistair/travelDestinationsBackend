@@ -1,11 +1,11 @@
 
 const users = [
   {
-    userName: "Alice Johnson",
-    email: "alice.johnson@example.com",
+    userName: "Daniel Szabo",
+    email: "daniel.szabo@travel.com",
     hashedPassword: "hash1",
     isLoggedIn: false,
-    createdOn: "2023-12-10",
+    createdOn: "2024-12-10",
     destinations: [
       {
         title: "Summer in Nepal",
