@@ -37,7 +37,6 @@ destinationsRouter.get('/:id/users/:email', async (req, res) => {
     const email = req.params.email;
     const destinationId = req.params.id;
 
-    // Call the function to get the destination
     const destination = await getDestinationByEmailAndId(email, destinationId);
 
     if (destination) {
@@ -77,13 +76,6 @@ destinationsRouter.put('/:id/users/:email', async (req, res) => {
     const userEmail = req.params.email;
     const updatedData = req.body;
 
-    // Log request data for debugging
-    console.log('Received request to update destination:');
-    console.log('Destination ID:', destinationId);
-    console.log('User Email:', userEmail);
-    console.log('Updated Data:', updatedData);
-
-    // Call the update function
     const updatedDestination = await updateDestination(userEmail, destinationId, updatedData);
 
     if (updatedDestination) {

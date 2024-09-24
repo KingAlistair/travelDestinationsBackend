@@ -1,10 +1,8 @@
 import { MongoClient, ObjectId } from 'mongodb';
 
-// MongoDB connection URI and database name
 const uri = 'mongodb://localhost:27017';
 const dbName = 'travelDestinations';
 
-// MongoDB client instance
 let client;
 
 // Connect to MongoDB
@@ -14,6 +12,7 @@ async function connect() {
         try {
             await client.connect();
             console.log('Connected to MongoDB');
+
         } catch (error) {
             console.error('Failed to connect to MongoDB', error);
             throw error;
@@ -93,12 +92,12 @@ export async function authenticateUser(credentials) {
         );
         console.log("Found email")
         if (!user) {
-            return null; // No user found with that email
+            return null; 
         }
 
-        // Compare the passwords directly
+        // Compare the "hashed" password
         if (user.hashedPassword !== password) {
-            return null; // Password doesn't match
+            return null;
         }
 
         return user; // Return user if authentication is successful
@@ -120,8 +119,8 @@ export async function createUser(user) {
             throw new Error('Failed to insert user');
         };
     } catch (error) {
-        console.error('Error creating user:', error); // Log any error
-        throw error; // Rethrow the error to be caught in the route handler
+        console.error('Error creating user:', error);
+        throw error;
     }
     finally {
         await closeConnection();
@@ -140,15 +139,13 @@ export async function updateUserByEmail(email, updates) {
 export async function toggleUserLoggedInStatus(email) {
     try {
         const db = await connect();
-
-        // Find the user by email
         const user = await db.collection('users').findOne({ email });
 
         if (!user) {
             throw new Error('User not found');
         };
 
-        // Toggle the isLoggedIn status
+        // Toggle the isLoggedIn status true/false
         const newStatus = !user.isLoggedIn;
 
         // Update the user with the new status
@@ -180,3 +177,24 @@ export async function deleteUserByEmail(email) {
     return result.deletedCount;
 };
 
+
+// // Create indexes for email in user collection
+// async function createIndexes() {
+//     const db = await connect();
+//     const usersCollection = db.collection('users');
+
+//     try {
+//       await usersCollection.createIndex({ email: 1 }, { unique: true });
+//       console.log('Unique index created on the email field');
+//     } catch (error) {
+//       console.error('Failed to create indexes:', error);
+//       throw error;
+//     } finally {
+//       await closeConnection(); 
+//     }
+//   }
+  
+//   // Create indexes at the start of your application
+//   (async () => {
+//     await createIndexes();
+//   })();

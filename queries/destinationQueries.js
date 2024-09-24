@@ -1,10 +1,8 @@
 import { MongoClient, ObjectId } from 'mongodb';
 
-// MongoDB connection URI and database name
 const uri = 'mongodb://localhost:27017';
 const dbName = 'travelDestinations';
 
-// MongoDB client instance
 let client;
 
 // Connect to MongoDB
@@ -32,7 +30,7 @@ async function closeConnection() {
 }
 
 
-// Helper function to get the users collection, we use it to connect to db and get users 
+// Helper function to get the users collection to use for destinations
 async function getUsersCollection() {
   const db = await connect();
   return db.collection('users');
@@ -42,15 +40,15 @@ async function getUsersCollection() {
 export async function getDestinations() {
   let usersCollection;
   try {
-    usersCollection = await getUsersCollection(); // Get the users collection
-    const users = await usersCollection.find({}, { projection: { destinations: 1 } }).toArray(); // Get all destinations
+    usersCollection = await getUsersCollection();
+    const users = await usersCollection.find({}, { projection: { destinations: 1 } }).toArray(); 
     const allDestinations = users.flatMap(user => user.destinations || []); // Flatten the destinations into single array
-    return allDestinations; // Return all destinations
+    return allDestinations; 
   } catch (error) {
-    console.error('Failed to fetch destinations:', error); // Log the error 
-    throw new Error('Failed to fetch destinations'); // Rethrow the error for further handling
+    console.error('Failed to fetch destinations:', error); 
+    throw new Error('Failed to fetch destinations'); 
   } finally {
-    await closeConnection(); // Ensure the connection is closed in the end
+    await closeConnection(); // Close conenction at the end
   }
 }
 
@@ -58,12 +56,12 @@ export async function getDestinations() {
 export async function getDestinationsByUserId(email) {
   let usersCollection;
   try {
-    usersCollection = await getUsersCollection(); // Get the users collection
+    usersCollection = await getUsersCollection(); 
     const user = await usersCollection.findOne(
-      { email: email }, // Find the user by email
-      { projection: { destinations: 1 } } // Project only the destinations array
+      { email: email }, 
+      { projection: { destinations: 1 } } // Get only the destinations array
     );
-    return user.destinations || []; // Return destinations or an empty array if no user is found
+    return user.destinations || []; // Return destinations or an empty array
   } catch (error) {
     console.error('Failed to fetch destinations by user ID:', error); 
     throw new Error('Failed to fetch destinations by user ID'); 
@@ -77,17 +75,17 @@ export async function getDestinationByEmailAndId(userEmail, destinationId) {
   try {
     const usersCollection = await getUsersCollection();
 
-    // Convert destinationId to ObjectId
+    // Convert destinationId to ObjectId 
     const objectId = new ObjectId(destinationId);
     console.log('In query: ' + destinationId)
-    // Query to find the specific destination within the user's destinations array
+
     const user = await usersCollection.findOne(
       {
-        email: userEmail, // Find user by email
+        email: userEmail, 
         destinations: { $elemMatch: { _id: objectId } } // Find destination by _id within the destinations array
       },
       {
-        projection: { 'destinations.$': 1 } // Project only the matched destination
+        projection: { 'destinations.$': 1 } // Get only the matched destination
       }
     );
 
@@ -106,10 +104,10 @@ export async function createDestination(email, destination) {
   try {
     const usersCollection = await getUsersCollection();
 
-    // Create a new destination object with a unique _id
+    // Create a new destination ObjectId
     const newDestination = { _id: new ObjectId(), ...destination };
 
-    // Update the user document identified by email by pushing the new destination to the destinations array
+    // Insert destination into user that matches email
     const result = await usersCollection.updateOne(
       { email: email },
       { $push: { destinations: newDestination } }
@@ -137,8 +135,8 @@ export async function updateDestination(userEmail, destinationId, updatedData) {
     const usersCollection = await getUsersCollection();
     const result = await usersCollection.updateOne(
       {
-        email: userEmail, // Find the user by email
-        'destinations._id': new ObjectId(destinationId) // Find the destination by _id within the array
+        email: userEmail, 
+        'destinations._id': new ObjectId(destinationId)
       },
       {
         $set: {
@@ -164,32 +162,18 @@ export async function updateDestination(userEmail, destinationId, updatedData) {
 export async function deleteDestination(userEmail, destinationId) {
   try {
     const usersCollection = await getUsersCollection();
-
-    // Log the inputs for debugging
-    console.log('Deleting destination with the following details:');
-    console.log('User Email:', userEmail);
-    console.log('Destination ObjectId:', destinationId);
-
-    // Convert destinationId to ObjectId
     const objectId = new ObjectId(destinationId);
 
-    // Log ObjectId conversion
-    console.log('Converted Destination ObjectId:', objectId);
-
-    // Perform the delete operation using $pull to remove the destination from the array
+    // Remove destination from array where id match using $pull
     const result = await usersCollection.updateOne(
       {
-        email: userEmail, // Match user by email
+        email: userEmail,
       },
       {
-        $pull: { destinations: { _id: objectId } } // Remove the destination with the matching _id
+        $pull: { destinations: { _id: objectId } }
       }
     );
 
-    // Log the result of the delete operation
-    console.log('Delete Result:', result);
-
-    // Check if a document was modified
     if (result.modifiedCount === 0) {
       console.log('No document matched the given userEmail and destinationId, or no changes were made.');
     } else {

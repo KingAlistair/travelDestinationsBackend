@@ -15,7 +15,7 @@ import {
 usersRouter.get('/', async (req, res) => {
   try {
     const users = await getUsers();
-    res.json(users); // Send the users as JSON response of the users
+    res.json(users);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
@@ -58,9 +58,9 @@ usersRouter.get('/email/:email', async (req, res) => {
 usersRouter.post('/', async (req, res) => {
   try {
     const newUser = req.body;
-    console.log('Creating user with data:', newUser); // Log the new user
-    const userId = await createUser(newUser); // Save the new user and get the inserted ID
-    res.status(201).json({ ...newUser, id: userId }); // Respond with the created user including the ID
+    console.log('Creating user with data:', newUser);
+    const userId = await createUser(newUser); 
+    res.status(201).json({ ...newUser, id: userId });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Failed to create user' });
@@ -95,7 +95,7 @@ usersRouter.post('/authentication', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' }); // Unauthorized if authentication fails
     }
 
-    res.status(200).json({ user }); // Respond with user details on successful authentication
+    res.status(200).json({ user }); // Respond with user object (without destinations)
   } catch (error) {
     console.error('Failed to authenticate user:', error);
     res.status(500).json({ error: 'Failed to authenticate user' });
