@@ -6,6 +6,7 @@ import {
   getUserById,
   getUserByEmail,
   toggleUserLoggedInStatus,
+  authenticateUser,
   createUser
 } from '../queries/userQueries.js';
 
@@ -25,9 +26,6 @@ usersRouter.get('/', async (req, res) => {
 usersRouter.get('/id/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-
-    console.log("Received userId:", userId);
-
     const user = await getUserById(userId);
     if (user) {
       res.json(user);
@@ -85,7 +83,23 @@ usersRouter.patch('/:email/toggle_status', async (req, res) => {
   }
 });
 
-// USER AUTHENTICATION 
 
+// Very basic user authentication returns user without destinations on success
+usersRouter.post('/authentication', async (req, res) => {
+  const credentials = req.body;
+
+  try {
+    const user = await authenticateUser(credentials);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' }); // Unauthorized if authentication fails
+    }
+
+    res.status(200).json({ user }); // Respond with user details on successful authentication
+  } catch (error) {
+    console.error('Failed to authenticate user:', error);
+    res.status(500).json({ error: 'Failed to authenticate user' });
+  }
+});
 
 export default usersRouter;

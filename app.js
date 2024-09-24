@@ -8,8 +8,8 @@ app.use(express.json());
 app.use(cors());
 
 // Import user router
-import usersRouters from './routers/userRouters.js';
-import destinationsRouters from './routers/destinationRouters.js';
+import usersRouters from './routers/userRouter.js';
+import destinationsRouters from './routers/destinationRouter.js';
 
 // Use user router
 app.use('/api/users', usersRouters);

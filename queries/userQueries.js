@@ -17,10 +17,10 @@ async function connect() {
         } catch (error) {
             console.error('Failed to connect to MongoDB', error);
             throw error;
-        }
-    }
+        };
+    };
     return client.db(dbName);
-}
+};
 
 // Close the MongoDB connection
 async function closeConnection() {
@@ -28,8 +28,8 @@ async function closeConnection() {
         await client.close();
         client = null;
         console.log('Disconnected from MongoDB');
-    }
-}
+    };
+};
 
 // GET
 
@@ -44,8 +44,8 @@ export async function getUsers() {
         throw new Error("Failed to get users");
     } finally {
         await closeConnection();
-    }
-}
+    };
+};
 
 // Get a user by id
 export async function getUserById(id) {
@@ -65,8 +65,8 @@ export async function getUserById(id) {
         throw new Error("Failed to get user by id");
     } finally {
         await closeConnection();
-    }
-}
+    };
+};
 
 // Get a user by email
 export async function getUserByEmail(email) {
@@ -79,8 +79,35 @@ export async function getUserByEmail(email) {
         throw new Error("Failed to get user by email");
     } finally {
         await closeConnection();
+    };
+};
+
+// Authentica user, gives back user object on success or null on fail
+export async function authenticateUser(credentials) {
+    const { email, password } = credentials;
+
+    try {
+        const db = await connect();
+        const user = await db.collection('users').findOne({ email },
+            { projection: { destinations: 0 } } // Exclude the destinations
+        );
+        console.log("Found email")
+        if (!user) {
+            return null; // No user found with that email
+        }
+
+        // Compare the passwords directly
+        if (user.hashedPassword !== password) {
+            return null; // Password doesn't match
+        }
+
+        return user; // Return user if authentication is successful
+    } catch (error) {
+        console.error("Failed to authenticate user:", error);
+        throw new Error("Failed to authenticate user");
     }
 }
+
 
 // Create a new user
 export async function createUser(user) {
@@ -91,22 +118,22 @@ export async function createUser(user) {
             return result.insertedId;
         } else {
             throw new Error('Failed to insert user');
-        }
+        };
     } catch (error) {
         console.error('Error creating user:', error); // Log any error
         throw error; // Rethrow the error to be caught in the route handler
     }
     finally {
         await closeConnection();
-    }
-}
+    };
+};
 
 // Update a user by email - Work in Progress
 export async function updateUserByEmail(email, updates) {
     const db = await connect();
     const result = await db.collection('users').updateOne({ email }, { $set: updates });
     return result.modifiedCount;
-}
+};
 
 
 // Toggle the loggedIn status of a user by email
@@ -119,7 +146,7 @@ export async function toggleUserLoggedInStatus(email) {
 
         if (!user) {
             throw new Error('User not found');
-        }
+        };
 
         // Toggle the isLoggedIn status
         const newStatus = !user.isLoggedIn;
@@ -135,14 +162,14 @@ export async function toggleUserLoggedInStatus(email) {
             return { email, isLoggedIn: newStatus };
         } else {
             throw new Error('Failed to update user status');
-        }
+        };
     } catch (error) {
         console.error('Error toggling user loggedIn status:', error);
         throw error;
     } finally {
         await closeConnection();
-    }
-}
+    };
+};
 
 
 
@@ -151,5 +178,5 @@ export async function deleteUserByEmail(email) {
     const db = await connect();
     const result = await db.collection('users').deleteOne({ email })
     return result.deletedCount;
-}
+};
 

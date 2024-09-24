@@ -18,6 +18,18 @@ Content-Type: application/json
 
 ###
 
+// Authenticate user
+
+POST http://localhost:3000/api/users/authentication
+Content-Type: application/json
+
+{
+  "email": "daniel.szabo@travel.com",
+  "password": "hash1"
+}
+
+
+###
 
 // Create new user
 POST http://localhost:3000/api/users/
