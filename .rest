@@ -34,7 +34,7 @@ Content-Type: application/json
 
 
 // Toggle user status by email
-PATCH http://localhost:3000/api/users/email/daniel.szabo@travel.com/toggle_status
+PATCH http://localhost:3000/api/users/daniel.szabo@travel.com/toggle_status
 Content-Type: application/json
 
 ###

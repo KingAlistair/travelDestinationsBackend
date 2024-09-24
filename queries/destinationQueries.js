@@ -32,7 +32,7 @@ async function closeConnection() {
 }
 
 
-// Helper function to get the users collection we use it to connect to db and get users 
+// Helper function to get the users collection, we use it to connect to db and get users 
 async function getUsersCollection() {
   const db = await connect();
   return db.collection('users');
@@ -65,14 +65,14 @@ export async function getDestinationsByUserId(email) {
     );
     return user.destinations || []; // Return destinations or an empty array if no user is found
   } catch (error) {
-    console.error('Failed to fetch destinations by user ID:', error); // Log the error if any
-    throw new Error('Failed to fetch destinations by user ID'); // Rethrow the error for further handling
+    console.error('Failed to fetch destinations by user ID:', error); 
+    throw new Error('Failed to fetch destinations by user ID'); 
   } finally {
-    await closeConnection(); // Ensure the connection is closed in the end
+    await closeConnection(); 
   }
 }
 
-// Get specific destination by user email and destinitaion id
+// Get specific destination by user email and destination id
 export async function getDestinationByEmailAndId(userEmail, destinationId) {
   try {
     const usersCollection = await getUsersCollection();

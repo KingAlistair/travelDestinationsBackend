@@ -1,8 +1,11 @@
-import express, { json } from 'express';
+import express from 'express';
+import cors from 'cors';
+
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 // Import user router
 import usersRouters from './routers/userRouters.js';

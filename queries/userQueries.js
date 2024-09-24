@@ -52,14 +52,13 @@ export async function getUserById(id) {
     try {
         const db = await connect();
 
-        // Convert string id to ObjectId
+        // Convert string id to ObjectId (MongoDb uses ObjectId type)
         const objectId = new ObjectId(id);
         console.log('Id= ' + id);
         console.log('ObjectId= ' + objectId);
-        // Query by _id using ObjectId
+        // Query specific user by objectId
         const user = await db.collection('users').findOne({ _id: objectId });
 
-        console.log('Fetched User: ', user); // Log the user to see if it exists
         return user;
     } catch (error) {
         console.error("Failed to get user by id:", error);
@@ -89,7 +88,6 @@ export async function createUser(user) {
     try {
         const result = await db.collection('users').insertOne(user);
         if (result.acknowledged) {
-            console.log('User created with ID:', result.insertedId); // Log the inserted ID
             return result.insertedId;
         } else {
             throw new Error('Failed to insert user');

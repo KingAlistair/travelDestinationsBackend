@@ -71,7 +71,7 @@ usersRouter.post('/', async (req, res) => {
 
 
 // Toggle the loggedIn status of a user by email
-usersRouter.patch('/email/:email/toggle_status', async (req, res) => {
+usersRouter.patch('/:email/toggle_status', async (req, res) => {
   try {
     const email = req.params.email;
     const result = await toggleUserLoggedInStatus(email);
