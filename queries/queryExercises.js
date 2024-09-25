@@ -54,6 +54,34 @@ async function runQueries() {
         console.log('Users who are logged in or have more than 1 destination:', loggedInOrManyDestinations);
 
 
+        // 3. Get all users who have no destinations
+        const usersWithNoDestinations = await usersCollection.find({
+            $or: [
+                { destinations: { $exists: false } },
+                { destinations: { $eq: [] } }
+            ]
+        }).toArray();
+        console.log('Users with no destinations:', usersWithNoDestinations);
+
+
+        // 4. Get users who have destinations tagged with a specific tag (can be sorted by country name)
+        const tag = "Spain";
+        const usersWithSpecificTag = await usersCollection.find({
+            'destinations.tag': tag
+        }).toArray();
+        console.log(`Users with destinations tagged with "${tag}":`, usersWithSpecificTag);
+
+
+        // 5. Find users created before a certain date - Problem: createdOn is created as string
+        /*
+        const cutoffDate = new Date("2024-03-05");
+        const usersCreatedBeforeDate = {
+            createdOn: { $lt: cutoffDate } // Find users with createdOn date less than cutoffDate
+        };
+        const usersBeforeDate = await usersCollection.find(usersCreatedBeforeDate).toArray();
+        console.log('Users Created Before March 5, 2024:', usersBeforeDate); */
+
+
     } catch (error) {
         console.error('Error running queries:', error);
     } finally {
