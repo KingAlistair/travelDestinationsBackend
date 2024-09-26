@@ -1,6 +1,6 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
-const uri = "mongodb://localhost:27017";
+const uri = "mongodb://127.0.0.1:27017/";
 const dbName = "travelDestinations";
 
 let client;
@@ -8,8 +8,11 @@ let client;
 async function connect() {
   if (!client) {
     client = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
     });
     try {
       await client.connect();
@@ -46,10 +49,7 @@ async function runQueries() {
         },
       })
       .toArray();
-    console.log(
-      "Users with destinations that have both image and description:",
-      usersWithImageAndDescription
-    );
+    console.log("Users with destinations that have both image and description:", usersWithImageAndDescription);
 
     // 2. Get users who are logged in or have more than 1 destination
     const loggedInOrManyDestinations = await usersCollection
@@ -57,18 +57,12 @@ async function runQueries() {
         $or: [{ isLoggedIn: true }, { "destinations.1": { $exists: true } }],
       })
       .toArray();
-    console.log(
-      "Users who are logged in or have more than 1 destination:",
-      loggedInOrManyDestinations
-    );
+    console.log("Users who are logged in or have more than 1 destination:", loggedInOrManyDestinations);
 
     // 3. Get all users who have no destinations
     const usersWithNoDestinations = await usersCollection
       .find({
-        $or: [
-          { destinations: { $exists: false } },
-          { destinations: { $eq: [] } },
-        ],
+        $or: [{ destinations: { $exists: false } }, { destinations: { $eq: [] } }],
       })
       .toArray();
     console.log("Users with no destinations:", usersWithNoDestinations);
@@ -80,24 +74,15 @@ async function runQueries() {
         "destinations.tag": tag,
       })
       .toArray();
-    console.log(
-      `Users with destinations tagged with "${tag}":`,
-      usersWithSpecificTag
-    );
+    console.log(`Users with destinations tagged with "${tag}":`, usersWithSpecificTag);
 
     // 5. Get destinations missing either image or description
     const destinationsMissingFields = await destinationsCollection
       .find({
-        $or: [
-          { image: { $exists: false } },
-          { description: { $exists: false } },
-        ],
+        $or: [{ image: { $exists: false } }, { description: { $exists: false } }],
       })
       .toArray();
-    console.log(
-      "Destinations missing image or description:",
-      destinationsMissingFields
-    );
+    console.log("Destinations missing image or description:", destinationsMissingFields);
 
     // 5. Find users created before a certain date - Problem: createdOn is created as string
     /*
