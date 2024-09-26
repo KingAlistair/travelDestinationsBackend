@@ -53,24 +53,24 @@ export async function getUsers() {
 
 // Get a user by id
 export async function getUserById(id) {
-  try {
-    const db = await connect();
+    try {
+        const db = await connect();
 
-    // Convert string id to ObjectId (MongoDb uses ObjectId type)
-    const objectId = new ObjectId(id);
-    console.log("Id= " + id);
-    console.log("ObjectId= " + objectId);
-    // Query specific user by objectId
-    const user = await db.collection("users").findOne({ _id: objectId });
-
-    return user;
-  } catch (error) {
-    console.error("Failed to get user by id:", error);
-    throw new Error("Failed to get user by id");
-  } finally {
-    await closeConnection();
-  }
-}
+        // Convert string id to ObjectId (MongoDb uses ObjectId type)
+        const objectId = new ObjectId(id);
+        console.log('Id= ' + id);
+        console.log('ObjectId= ' + objectId);
+        // Query specific user by objectId
+        const user = await db.collection('users').findOne({ _id: objectId });
+      
+        return user;
+    } catch (error) {
+        console.error("Failed to get user by id:", error);
+        throw new Error("Failed to get user by id");
+    } finally {
+        await closeConnection();
+    };
+};
 
 // Get a user by email
 export async function getUserByEmail(email) {
@@ -90,6 +90,7 @@ export async function getUserByEmail(email) {
 export async function authenticateUser(credentials) {
   const { email, password } = credentials;
 
+
   try {
     const db = await connect();
     const user = await db.collection("users").findOne(
@@ -99,19 +100,19 @@ export async function authenticateUser(credentials) {
     console.log("Found email");
     if (!user) {
       return null;
-    }
+    };
 
     // Compare the "hashed" password
     if (user.hashedPassword !== password) {
       return null;
-    }
+    };
 
     return user; // Return user if authentication is successful
   } catch (error) {
     console.error("Failed to authenticate user:", error);
     throw new Error("Failed to authenticate user");
   }
-}
+};
 
 // Create a new user
 export async function createUser(user) {

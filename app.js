@@ -7,11 +7,11 @@ const port = 3000;
 app.use(express.json());
 app.use(cors());
 
-// Import user router
+// Import user and destination router
 import usersRouters from './routers/userRouter.js';
 import destinationsRouters from './routers/destinationRouter.js';
 
-// Use user router
+// Use user and destination router
 app.use('/api/users', usersRouters);
 app.use('/api/destinations', destinationsRouters);
 
