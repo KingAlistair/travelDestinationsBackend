@@ -12,7 +12,6 @@ async function connect() {
         try {
             await client.connect();
             console.log('Connected to MongoDB');
-
         } catch (error) {
             console.error('Failed to connect to MongoDB', error);
             throw error;
@@ -57,7 +56,6 @@ export async function getUserById(id) {
         console.log('ObjectId= ' + objectId);
         // Query specific user by objectId
         const user = await db.collection('users').findOne({ _id: objectId });
-
         return user;
     } catch (error) {
         console.error("Failed to get user by id:", error);
@@ -93,19 +91,19 @@ export async function authenticateUser(credentials) {
         console.log("Found email")
         if (!user) {
             return null; 
-        }
+        };
 
         // Compare the "hashed" password
         if (user.hashedPassword !== password) {
             return null;
-        }
+        };
 
         return user; // Return user if authentication is successful
     } catch (error) {
         console.error("Failed to authenticate user:", error);
         throw new Error("Failed to authenticate user");
-    }
-}
+    };
+};
 
 
 // Create a new user
