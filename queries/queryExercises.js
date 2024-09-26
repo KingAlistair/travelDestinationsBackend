@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 
 const uri = "mongodb://127.0.0.1:27017/";
@@ -7,31 +7,32 @@ const dbName = "travelDestinations";
 let client;
 
 async function connect() {
-  if (!client) {
-    client = new MongoClient(uri, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-    });
-    try {
-      await client.connect();
-      console.log("Connected to MongoDB");
-    } catch (error) {
-      console.error("Failed to connect to MongoDB", error);
-      throw error;
-    }
-    return client.db(dbName);
-}
+    if (!client) {
+        client = new MongoClient(uri, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: true,
+                deprecationErrors: true,
+            },
+        });
+        try {
+            await client.connect();
+            console.log("Connected to MongoDB");
+        } catch (error) {
+            console.error("Failed to connect to MongoDB", error);
+            throw error;
+        }
+        return client.db(dbName);
+    };
+};
 
 async function closeConnection() {
     if (client) {
         await client.close();
         client = null;
         console.log("Disconnected from MongoDB");
-    }
-}
+    };
+};
 
 async function runQueries() {
     const db = await connect();
