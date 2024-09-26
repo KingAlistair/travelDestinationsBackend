@@ -1,19 +1,25 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
-const uri = 'mongodb://localhost:27017';
-const dbName = 'travelDestinations';
+const uri = "mongodb://127.0.0.1:27017/";
+const dbName = "travelDestinations";
 
 let client;
 
 // Connect to MongoDB
 async function connect() {
   if (!client) {
-    client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    client = new MongoClient(uri, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
     try {
       await client.connect();
-      console.log('Connected to MongoDB');
+      console.log("Connected to MongoDB");
     } catch (error) {
-      console.error('Failed to connect to MongoDB', error);
+      console.error("Failed to connect to MongoDB", error);
       throw error;
     };
   };
@@ -28,7 +34,6 @@ async function closeConnection() {
     console.log('Disconnected from MongoDB');
   };
 };
-
 
 // Helper function to get the users collection to use for destinations
 async function getUsersCollection() {
@@ -75,9 +80,9 @@ export async function getDestinationByEmailAndId(userEmail, destinationId) {
   try {
     const usersCollection = await getUsersCollection();
 
-    // Convert destinationId to ObjectId 
+    // Convert destinationId to ObjectId
     const objectId = new ObjectId(destinationId);
-    console.log('In query: ' + destinationId)
+    console.log("In query: " + destinationId);
 
     const user = await usersCollection.findOne(
       {
@@ -85,15 +90,15 @@ export async function getDestinationByEmailAndId(userEmail, destinationId) {
         destinations: { $elemMatch: { _id: objectId } } // Find destination by _id within the destinations array
       },
       {
-        projection: { 'destinations.$': 1 } // Get only the matched destination
+        projection: { "destinations.$": 1 }, // Get only the matched destination
       }
     );
 
     // Return the matched destination if it exists
     return user ? user.destinations[0] : null;
   } catch (error) {
-    console.error('Failed to fetch destination:', error);
-    throw new Error('Failed to fetch destination');
+    console.error("Failed to fetch destination:", error);
+    throw new Error("Failed to fetch destination");
   } finally {
     await closeConnection();
   }
@@ -122,8 +127,8 @@ export async function createDestination(email, destination) {
       return null;
     }
   } catch (error) {
-    console.error('Failed to create destination:', error);
-    throw new Error('Failed to create destination');
+    console.error("Failed to create destination:", error);
+    throw new Error("Failed to create destination");
   } finally {
     await closeConnection();
   };
@@ -140,19 +145,19 @@ export async function updateDestination(userEmail, destinationId, updatedData) {
       },
       {
         $set: {
-          'destinations.$.title': updatedData.title,
-          'destinations.$.description': updatedData.description,
-          'destinations.$.image': updatedData.image,
-          'destinations.$.link': updatedData.link,
-          'destinations.$.tag': updatedData.tag
-        }
+          "destinations.$.title": updatedData.title,
+          "destinations.$.description": updatedData.description,
+          "destinations.$.image": updatedData.image,
+          "destinations.$.link": updatedData.link,
+          "destinations.$.tag": updatedData.tag,
+        },
       }
     );
 
     return result.modifiedCount > 0;
   } catch (error) {
-    console.error('Failed to update destination:', error);
-    throw new Error('Failed to update destination');
+    console.error("Failed to update destination:", error);
+    throw new Error("Failed to update destination");
   } finally {
     await closeConnection();
   }
@@ -170,20 +175,20 @@ export async function deleteDestination(userEmail, destinationId) {
         email: userEmail,
       },
       {
-        $pull: { destinations: { _id: objectId } }
+        $pull: { destinations: { _id: objectId } },
       }
     );
 
     if (result.modifiedCount === 0) {
-      console.log('No document matched the given userEmail and destinationId, or no changes were made.');
+      console.log("No document matched the given userEmail and destinationId, or no changes were made.");
     } else {
-      console.log('Destination deleted successfully.');
+      console.log("Destination deleted successfully.");
     }
 
     return result.modifiedCount > 0;
   } catch (error) {
-    console.error('Failed to delete destination:', error);
-    throw new Error('Failed to delete destination');
+    console.error("Failed to delete destination:", error);
+    throw new Error("Failed to delete destination");
   } finally {
     await closeConnection();
   }

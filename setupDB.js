@@ -32,10 +32,7 @@ async function run() {
 
     // Insert multiple users into the "users" collection
     const result = await myColl.insertMany(users);
-    console.log(
-      `${result.insertedCount} documents were inserted with the following _ids:`,
-      result.insertedIds
-    );
+    console.log(`${result.insertedCount} documents were inserted with the following _ids:`, result.insertedIds);
   } catch (err) {
     console.error("Error inserting data: ", err);
   } finally {
